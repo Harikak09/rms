@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Description of your webpage goes here.">
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+    <title>Welcome Page</title>
+</head>
+
+<body>
+    <div class="background-image">   
+        <header>
+            <div class="container">
+                <h1>Welcome to [Restaurant Name]</h1>
+                <nav>
+                    <ul>
+                        <li><a href="{{request.post}}menu">Menu</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropbtn">Details</a>
+                            <div class="dropdown-content">
+                                <a href="{{request.post}}customer_add">Customers</a>
+                                <a href="orders.html">Orders</a>
+                            </div>
+                        </li>
+                        <li><a href="#">About Us</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <img src="https://images.ctfassets.net/u128j5s4q9gv/57IRFeeO7SFRJukAtfGras/5dd140d33a975599ae75fb9d74c0491f/nestle-plant-based-meat.jpg"> 
+    </div>
+</body>
+</html>
