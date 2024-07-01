@@ -32,22 +32,21 @@ body {
 /* Style for buttons */
 .button {
   width: 250px;
-  height: 100px;
-  font-size: 22px;
-  margin: 15px;
+  height: 80px;
+  font-size: 20px;
+  margin: 10px;
   border: none;
-  border-radius: 8px;
-  background-color: #29221b; 
+  border-radius: 5px;
+  background-color:burlywood ; 
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); */
 }
 
 .button:hover {
-  background-color: #45a049; /* Darker green */
-}
-
+    background-color: rgb(122, 59, 27); /* Darker green */
+  }
 /* Arrange buttons in two columns */
 .button-container {
   display: flex;
@@ -78,10 +77,10 @@ body {
 <body>
     <div class="container">
         <div class="button-container">
-            <button class="button" onclick="location.href='{{request.post}}allocate_table'">ALLOCATE TABLE</button>
+            <button class="button" onclick="location.href='{{request.post}}enter_customer'">Allocate Table</button>
         </div>
         <div class="button-container">
-            <button class="button" onclick="location.href='{{request.post}}calculate_bill'">CALCULATE BILL</button>
+            <button class="button" onclick="location.href='{{request.post}}bill_calculation'">Calculate Bill</button>
         </div>
     </div>
     <!-- Background Image -->

@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.template import loader
 from django.db import connection
 from datetime import date
+from .forms import c_add
+from .forms import eo
+from .forms import bill
+from .forms import login_details
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 # def login():
@@ -14,39 +20,95 @@ def homepage(request):
     return render(request,'homepage.html')
 
 
-def customer_add(request):
-    if request.method == 'POST' and 'customer_add' in request.POST:
-        f1 = request.POST.get('id')
-        f2 = request.POST.get('fname')
-        f3 = request.POST.get('lname')
-        f4 = request.POST.get('cno')
-        f5 = request.POST.get('mail')
-        
-        # Perform basic form validation
-        if not all([f1, f2, f3, f4, f5]):
-            return render(request, 'customers.html', {'error_message': 'All fields are required.'})
-        
-        try:
+
+def enter_customer(req):
+    return render(req,'customers.html')
+
+def customer_add(req):
+    if req.method == 'POST':
+        form = c_add(req.POST)
+        if form.is_valid():
+            cust_fname = form.cleaned_data["cust_fname"]
+            cust_lname = form.cleaned_data["cust_lname"]
+            email = form.cleaned_data["email"]
+            phone = form.cleaned_data["phone"]
+            mem = form.cleaned_data["members"]
             with connection.cursor() as cursor:
-                cursor.execute("INSERT INTO customer (id, fname, lname, cno, mail) VALUES (%s, %s, %s, %s, %s)", [f1, f2, f3, f4, f5])
-        except Exception as e:
-            return render(request, 'customers.html', {'error_message': 'An error occurred while adding the customer.'})
-        
-        # Redirect to a valid URL name
-        return redirect(request,'homepage.html')  # Assuming you have a URL pattern named 'homepage'
+                cursor.execute("INSERT INTO customer (cust_fname, cust_lname, contact_no, email_id) VALUES (%s, %s, %s, %s)", [cust_fname, cust_lname, phone, email])
+                cursor.execute("select * from GetLastcustomer()")
+                c_id = cursor.fetchone()
+                cursor.execute("call Table_allocation(%s,%s)",[c_id[0],mem])
+                cursor.execute("select * from GetLasttableid()")
+                t_id=cursor.fetchone()
+                cursor.execute("select * from GetLastorderid()")
+                o_id=cursor.fetchone()
+                messages.success(req, 'Customer added successfully and his table is %s and order id is : %s' % (t_id[0], o_id[0]))
+
+    else:
+        form = c_add()  
+    return render(req, 'customers.html', {'form': form})
+
+def enter_order(req):
+    return render(req,'enter_order.html')
     
-    return render(request, 'customers.html')
+
+
+def insert_oi(req):
+    if req.method == 'POST':
+        form = eo(req.POST)
+        if form.is_valid():
+            f1 = form.cleaned_data["o_id"]
+            f2 = form.cleaned_data["food_name"]
+            f3 = form.cleaned_data["quant"]
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT food_id FROM food WHERE food_name = %s", [f2])
+                f_id = cursor.fetchone()
+                if f_id:
+                    cursor.execute("call insert_oi(%s,%s,%s)",[f1,f_id[0],f3])
+                    return redirect(f'/website/server/')  # Redirect to the same view
+                else:
+                    # Handle if food not found
+                    return HttpResponse("Food not found")
+    else:
+        form = eo()  # Assuming enter_order1 is your form class
+    return render(req, 'enter_order.html', {'form': form})
+
 
 def allocating_table(request):
     with connection.cursor() as cursor:
         cursor.execute("call Table_allocation(7,2)")
     return HttpResponse('Done table allocation')
 
+def bill_calculation(req):
+    return render(req,'bill_calculation.html')
+
+def display_bill(req):
+    if req.method == 'POST':
+        form = bill(req.POST)
+        if form.is_valid():
+            f1 = form.cleaned_data["o_id"]
+            f2 = form.cleaned_data["method"]
+            with connection.cursor() as cursor:
+                cursor.execute("call bill(%s,%s)",[f1,f2])
+                cursor.execute("SELECT * FROM bill WHERE order_id = %s order by bill_no desc limit 1", [f1])
+                display = cursor.fetchall()
+                context = {
+                    'display_bill' : display,
+                }
+                template = loader.get_template('display_bill.html')
+                return HttpResponse(template.render(context,req))
+    else:
+        form = eo()  # Assuming enter_order1 is your form class
+    return render(req, 'bill_calculation.html', {'form': form})
+
+    
+
+
 
 def menu(request):
     with connection.cursor() as cursor:
         cursor.execute("set role manager")
-        display_query = "SELECT food_id,food_name , price FROM food"
+        display_query = "SELECT food_id,food_name , price FROM food order by food_id"
         cursor.execute(display_query)
         rows = cursor.fetchall()
         
@@ -54,6 +116,39 @@ def menu(request):
         items = [{'id':row[0],'name': row[1], 'price': row[2]} for row in rows]
 
     return render(request, 'menu1.html', {'items': items})
+
+def chef_food(r):
+    with connection.cursor() as cursor:
+        cursor.execute("select distinct * from chef_food")
+        display = cursor.fetchall()
+        contex={
+            'chef_food':display,
+        }
+        template = loader.get_template('chef_and_food.html')
+    return HttpResponse(template.render(contex,r))
+
+def manager_login(req):
+    if req.method == 'POST':
+        form = login_details(req.POST)
+        if form.is_valid():
+            f1 = form.cleaned_data["username"]
+            f2 = form.cleaned_data["password"]
+            with connection.cursor() as cursor:
+                cursor.execute("select password from login where user_name = 0")
+                display = cursor.fetchone()
+                if (f2==display[0] and f1 ==0):
+                    cursor.execute("set role manager")
+                    return render(req,'manager_view.html')
+    return render(req,'manager_login.html')
+
+def chef_login(req):
+    return render(req,'chef_login.html')
+
+def server_login(req):
+    return render(req,'server_login.html')
+
+def dining_supervisor_login(req):
+    return render(req,'dining_supervisor_login.html')
 
 def manager(req):
     with connection.cursor() as cursor:
@@ -66,28 +161,25 @@ def server(req):
 def dining_supervisor(req):
     return render(req,'dining_supervisor_view.html')
 
+
 def customer(req):
     return render(req,'customer_view.html')
 
-def chef(req):
-    return render(req,'chef_view.html')
 
-def index(req):
+def chef(req,id):
+    with connection.cursor() as cursor:
+        cursor.execute("select * from notserved_food where chef_id = %s",[id])
+        display = cursor.fetchall()
+        template = loader.get_template('chef_pending_orders.html')
+        context={
+            'chef_done':display,
+        }
+        return HttpResponse(template.render(context,req))
+
+def website(req):
     return render(req,'index.html')
 
-def allocatingtable(request):
-    with connection.cursor() as cursor:
-        cursor.execute("call insert_oi()")
-    return HttpResponse(request,'Done table allocation')
-# def insertingintoorderitems(request,oid,foodid,quan):
-#     func_call="call insert_oi(oid,foodid,quan)"
-
-# def chefdone(request,sno):
-#     func_call="call chef_serve(sno)"
     
-# def billing(request,cust_id,pm):
-#     fun_call="bill(cust_id,pm)"
-
 def view_all_employees(request):
     with connection.cursor() as cursor:
         cursor.execute("set role manager")
@@ -101,12 +193,64 @@ def view_all_employees(request):
     return render(request, 'employees.html', {'employees': employees})
 
 
-def my_view(request):
-    with connection.cursor() as cursor:
-        display="select * from employee "
-        cursor.execute(display)
-        rows = cursor.fetchall()
 
-    # Pass the data to the template context
-    return HttpResponse( f"'data_from_postgres':{ rows}")
+def chef_serve(request, id, sno):
+    with connection.cursor() as cursor:
+        cursor.execute("call chef_serve(%s)", [sno])
+    return redirect(f'/website/chef_login/chef/{id}/')
+
+
+
+def food_chef(request):
+    with connection.cursor() as cursor:
+        cursor.execute("select * from chef_food")
+        display = cursor.fetchall()
+        template = loader.get_template('food_chef.html')
+        context = {
+            'food_chef':display,
+        }
+        return HttpResponse(template.render(context,request))
+def top_food(request):
+    with connection.cursor() as cursor:
+        cursor.execute("select food_name,total_orders,food_id from top_selling_food_items")
+        display=cursor.fetchall()
+        template=loader.get_template('top_selling.html')
+        context={
+            'top_food':display
+        }
+        return HttpResponse(template.render(context,request))
+
+def total_revenue(request):
+    with connection.cursor() as cursor:
+        cursor.execute("select order_date,total_orders,total_revenue from orders_revenue_by_date")
+        display=cursor.fetchall()
+        template=loader.get_template('total_revenue.html')
+        context={
+            'total_revenue':display
+        }
+        return HttpResponse(template.render(context,request))
+    
+def total_orders_by_mode(request):
+    with connection.cursor() as cursor:
+        cursor.execute("select payment_mode,sum(net_amount) from payment inner join bill on payment.bill_no = bill.bill_no group by payment_mode ")
+        display = cursor.fetchall()
+        template = loader.get_template('total_orders_by_mode.html')
+        context={
+            'total_orders_by_mode':display
+        }
+        return HttpResponse(template.render(context,request))
+
+
+def adjust_price(req, food_name, quant):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT food_id FROM food WHERE food_name = %s", [food_name])
+        id_ = cursor.fetchone()
+        if id_:
+            food_id = int(id_[0])  # Extracting the first element of the tuple and converting it to an integer
+            cursor.execute("select adjust_price(%s, %s)", [food_id, quant])
+    return redirect('/website/manager_login/menu/')
+
+
+def adjust_price_1(req):
+    return render(req,'adjust_price.html')
 

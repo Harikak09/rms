@@ -31,22 +31,20 @@ body {
 
 /* Style for buttons */
 .button {
-  width: 200px;
-  height: 60px;
+  width: 250px;
+  height: 80px;
   font-size: 20px;
-  margin: 15px;
+  margin: 10px;
   border: none;
-  border-radius: 8px;
-  background-color: #4CAF50; /* Green */
+  border-radius: 5px;
+  background-color: burlywood; /* Green */
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .button:hover {
-  background-color: #45a049; /* Darker green */
-}
+    background-color: rgb(122, 59, 27); /* Darker green */
+  }
 
 /* Arrange buttons in two columns */
 .button-container {
@@ -78,14 +76,14 @@ body {
 <body>
     <div class="container">
         <div class="button-container">
-            <button class="button" onclick="location.href='{{request.post}}view_all_employees'">View_all_employees</button>
+            <button class="button" onclick="location.href='{{request.post}}view_all_employees'">Employees List</button>
             <button class="button" onclick="location.href='{{request.post}}menu'">Menu</button>
-            <button class="button" onclick="location.href='{{request.post}}revenue'">Revenue Till Now</button>
+            <button class="button" onclick="location.href='{{request.post}}total_revenue'">Revenue</button>
         </div>
         <div class="button-container">
-            <button class="button" onclick="location.href='#'">Top Selling Food</button>
-            <button class="button" onclick="location.href='#'">Price Change</button>
-            <button class="button" onclick="location.href='#'">Orders By Mode</button>
+            <button class="button" onclick="location.href='{{request.post}}top_food'">Top Selling Food</button>
+            <button class="button" onclick="location.href='{{request.post}}adjust_price'">Price Change</button>
+            <button class="button" onclick="location.href='{{request.post}}total_orders_by_mode'">Orders & Mode</button>
         </div>
     </div>
     <!-- Background Image -->

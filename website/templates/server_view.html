@@ -31,22 +31,21 @@ body {
 
 /* Style for buttons */
 .button {
-  width: 200px;
-  height: 60px;
-  font-size: 20px;
-  margin: 15px;
-  border: none;
-  border-radius: 8px;
-  background-color: #4CAF50; /* Green */
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
+    width: 250px;
+    height: 80px;
+    font-size: 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color:burlywood; /* Green */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
 
-.button:hover {
-  background-color: #45a049; /* Darker green */
-}
+  .button:hover {
+    background-color: rgb(122, 59, 27); /* Darker green */
+  }
 
 /* Arrange buttons in two columns */
 .button-container {
@@ -78,10 +77,10 @@ body {
 <body>
     <div class="container">
         <div class="button-container">
-            <button class="button" onclick="location.href='{{request.post}}enter_order'">enter_order</button>
+            <button class="button" onclick="location.href='{{request.post}}enter_order'">Enter Order</button>
         </div>
         <div class="button-container">
-            <button class="button" onclick="location.href='{{request.post}}food_and_chef'">food_and_chef</button>
+            <button class="button" onclick="location.href='{{request.post}}chef_food'">Food & Chef</button>
         </div>
     </div>
     <!-- Background Image -->

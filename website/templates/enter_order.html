@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Details</title>
+  <title>Order Details</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -77,52 +77,28 @@
       margin-top: 20px;
       text-align: center;
     }
-    .error-message {
-      color: #ff0000; /* Red color for error messages */
-      font-size: 14px;
-      margin-top: 5px;
-    }
-
-    .success-message {
-      color: #008000; /* Green color for success messages */
-      font-size: 16px;
-      margin-top: 5px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="form-container">
-      <h3>Customer Details</h3>
-      <form method="post" action="/website/dining_supervisor/enter_customer/customer_add/">
+      <h3>Order Details</h3>
+      <form method="post" action="/website/server/enter_order/insert_oi/">
         {% csrf_token %}
         <div>
-            <label for="cust_fname">First Name:</label>
-            <input type="text" id="cust_fname" name="cust_fname">
+            <label for="o_id">Order ID:</label>
+            <input type="text" id="o_id" name="o_id">
         </div>
         <div>
-            <label for="cust_lname">Last Name:</label>
-            <input type="text" id="cust_lname" name="cust_lname">
+            <label for="food_name">Food Name:</label>
+            <input type="text" id="food_name" name="food_name">
         </div>
         <div>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email">
-        </div>
-        <div>
-            <label for="phone">Phone Number:</label>
-            <input type="text" id="phone" name="phone">
-            <label for="members">Total Members:</label>
-            <input type="text" id="members" name="members">
+            <label for="quant">Quantity:</label>
+            <input type="text" id="quant" name="quant">
         </div>
         <button type="submit">Submit</button>
     </form>    
-    {% if messages %}
-        {% for message in messages %}
-          <div class="{% if message.tags %}{{ message.tags }}-message{% endif %}">
-            <strong>{{ message }}</strong>
-          </div>
-        {% endfor %}
-      {% endif %}
     </div>
   </div>
 </body>

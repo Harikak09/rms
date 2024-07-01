@@ -1,6 +1,6 @@
 body {
   background-image: url(); /* Add your background image URL here */
-  font-family: cursive;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 10px;
   margin: 0; /* Reset default margin */
   color: #555; /* Set default text color */
@@ -31,7 +31,7 @@ h1, h2, p {
   margin: 20px auto; /* Center menu horizontally with more spacing */
   padding: 20px;
   border-radius: 10px; /* Add rounded corners to menu */
-  box-shadow: 0 0 10px rgba(54, 180, 5, 0.1); /* Add subtle shadow */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
 }
 
 img {
