@@ -66,14 +66,11 @@ WSGI_APPLICATION = 'rms.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'restaurant',
-        'USER':'postgres',
-        'PASSWORD': '1234',
-        'HOST' : 'localhost',
-        'PORT': '5432',
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # Use BASE_DIR to refer to the location of your db.sqlite3 file
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

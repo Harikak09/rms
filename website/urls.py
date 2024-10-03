@@ -3,7 +3,6 @@ from . import views
 from .views import customer_add
 
 urlpatterns = [
-    # path('wbsite/', views.homepage, name='homepage'),
     path('', views.homepage, name='homepage'),
     path('website/', views.website, name='index'),
     
@@ -25,13 +24,6 @@ urlpatterns = [
     path('website/server/enter_order/',views.enter_order,name='enter_order'),
     path('website/server/enter_order/insert_oi/',views.insert_oi,name='insert_oi'),
     path('website/dining_supervisor_login/',views.dining_supervisor_login,name='loginpage'),
-
-    # path("/", views.insertcust, name="insertcust"),
-    # path("<int:members><int:cust_id>/", views.allocatingtable, name="allocatingtable"),
-    # path("<int:oid><int:foodid><int:quan>/", views.insertingintoorderitems, name="insertingintoorderitems"),
-    # path("<int:sno>/", views.chefdone, name="chefdone"),
-    # path("<int:cust_id><string:pm>/", views.billing, name="billing"),
-    # path("<int:billno>/", views.displaybill, name="displaybill"),
     path('website/manager_login/view_all_employees/', views.view_all_employees, name='view_all_employees'),
     path('website/manager/menu/', views.menu, name='menu'),
     path('website/customer_add/', customer_add, name='customer_add'),
