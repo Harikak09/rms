@@ -12,10 +12,6 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 
-# def login():
-#     template = loader.get_template('welcome.html')
-#     return HttpResponse(template.render())
-
 def homepage(request):
     return render(request,'homepage.html')
 
@@ -98,7 +94,7 @@ def display_bill(req):
                 template = loader.get_template('display_bill.html')
                 return HttpResponse(template.render(context,req))
     else:
-        form = eo()  # Assuming enter_order1 is your form class
+        form = eo() 
     return render(req, 'bill_calculation.html', {'form': form})
 
     
